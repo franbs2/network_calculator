@@ -16,7 +16,7 @@ Uma aplicação Flutter Web para calcular **endereços de rede, broadcast e faix
 
 
 ## 📸 Capturas de Tela
-![Ilustração](assets/calculadora_de_rede_e_broadcast.png)
+![Ilustração](calculadora_de_rede_e_broadcast.png)
 
 
 ## 🚀 Como rodar
