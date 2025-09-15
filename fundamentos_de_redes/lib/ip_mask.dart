@@ -1,3 +1,5 @@
+//Classe com os metodos para calcular rede, broadcast e faixa de hosts!
+
 class IpMask {
   final String ip;
   final String mask;
