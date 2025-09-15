@@ -375,7 +375,6 @@ class FormSection extends StatelessWidget {
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         TextFormField(
-          inputFormatters: [IpOrCidrAutoFormatter()],
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Por favor, insira um endereço IP';
@@ -400,7 +399,6 @@ class FormSection extends StatelessWidget {
             }
             return null;
           },
-          inputFormatters: [IpOrCidrAutoFormatter()],
           controller: maskController,
           decoration: const InputDecoration(
             labelText: "Máscara de Rede",
@@ -429,59 +427,3 @@ class FormSection extends StatelessWidget {
   }
 }
 
-class IpOrCidrAutoFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    String text = newValue.text;
-
-    if (text.isEmpty) return newValue;
-
-    if (text.startsWith('/')) {
-      final after = text.substring(1);
-
-      if (after.isEmpty) return newValue;
-
-      if (!RegExp(r'^\d{1,2}$').hasMatch(after)) return oldValue;
-
-      final int? prefix = int.tryParse(after);
-      if (prefix == null) return oldValue;
-
-      if (prefix > 32) return oldValue;
-
-      return newValue;
-    }
-
-    if (!RegExp(r'^[0-9.]+$').hasMatch(text)) return oldValue;
-
-    if (text.startsWith('.')) return oldValue;
-
-    final raw = text.replaceAll('.', '');
-    final buffer = StringBuffer();
-    for (int i = 0; i < raw.length; i++) {
-      buffer.write(raw[i]);
-
-      if ((i + 1) % 3 == 0 && i + 1 != raw.length && (i + 1) < 12) {
-        buffer.write('.');
-      }
-    }
-
-    String formatted = buffer.toString();
-
-    final parts = formatted.split('.');
-    if (parts.length > 4) return oldValue;
-    for (final part in parts) {
-      if (part.isEmpty) continue;
-      final int? value = int.tryParse(part);
-      if (value == null) return oldValue;
-      if (value > 255) return oldValue;
-    }
-
-    return TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
-    );
-  }
-}
